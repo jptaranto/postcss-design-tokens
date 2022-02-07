@@ -2,11 +2,11 @@
 
 [PostCSS] plugin that provides a function to retrieve design tokens expressed in JS or JSON, within CSS.
 
-[PostCSS]: https://github.com/postcss/postcss
+[postcss]: https://github.com/postcss/postcss
 
 ```css
 .foo {
-  color: token(colors.blue)
+  color: token(colors.blue);
 }
 ```
 
@@ -27,7 +27,7 @@ npm install --save-dev postcss postcss-design-tokens
 **Step 2:** Import your design tokens and add the plugin to plugins list in `postcss.config.js`:
 
 ```js
-const tokens = require('./design-tokens.js');
+const tokens = require("./design-tokens.js")
 
 module.exports = {
   plugins: {
@@ -36,7 +36,7 @@ module.exports = {
 }
 ```
 
-**Step 3:** Use the token() function in your css to retrieve the token values.
+**Step 3:** Use the token() function in your CSS to retrieve the token values.
 Use dot notation for nested values:
 
 ```css
@@ -51,7 +51,7 @@ Use dot notation for nested values:
 
 [official docs]: https://github.com/postcss/postcss#usage
 
-# Options
+## Options
 
 ### `tokens` (required)
 
@@ -59,7 +59,7 @@ A JS object of your design tokens. Tokens can be nested and there's no defined s
 you need to adhere to.
 
 Instead of defining these inside your `postcss.config.js` it
-makes more sense to define them inside either a js file:
+makes more sense to define them inside either a `.js` file:
 
 ```js
 module.exports = {
@@ -74,10 +74,10 @@ module.exports = {
     xl: "2rem",
     small: "1rem",
   },
-};
+}
 ```
 
-Or a json file:
+Or a `.json` file:
 
 ```json
 {
@@ -98,7 +98,7 @@ Or a json file:
 Then, simply `require()` in your `postcss.config.js`:
 
 ```js
-const tokens = require('./design-tokens.json');
+const tokens = require("./design-tokens.json")
 
 module.exports = {
   plugins: {

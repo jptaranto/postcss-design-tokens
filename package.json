@@ -1,19 +1,23 @@
 {
   "name": "postcss-design-tokens",
-  "version": "0.0.0",
-  "description": "PostCSS plugin that provides a function to reference design tokens in CSS",
+  "version": "1.0.0",
+  "description": "PostCSS plugin that provides a function to retrieve design tokens expressed in JS or JSON, within CSS",
   "keywords": [
     "postcss",
     "css",
     "postcss-plugin",
-    "postcss-design-tokens"
+    "postcss-design-tokens",
+    "design",
+    "token",
+    "tokens"
   ],
   "scripts": {
-    "test": "jest --coverage && eslint ."
+    "test": "jest --coverage && prettier --check . && eslint --ext jsx,json,js .",
+    "format": "prettier --write ."
   },
   "author": "jptaranto <jacktaranto@gmail.com>",
   "license": "MIT",
-  "repository": "jptaranto/postcss-design-tokens",
+  "repository": "https://github.com/jptaranto/postcss-design-tokens",
   "engines": {
     "node": ">=12.0.0"
   },
@@ -23,9 +27,11 @@
   "devDependencies": {
     "clean-publish": "^3.4.2",
     "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^25.2.2",
     "jest": "^27.3.1",
-    "postcss": "^8.3.11"
+    "postcss": "^8.3.11",
+    "prettier": "^2.5.1"
   },
   "eslintConfig": {
     "parserOptions": {
@@ -37,7 +43,8 @@
     },
     "extends": [
       "eslint:recommended",
-      "plugin:jest/recommended"
+      "plugin:jest/recommended",
+      "prettier"
     ],
     "rules": {
       "jest/expect-expect": "off"
