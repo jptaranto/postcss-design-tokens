@@ -1,31 +1,52 @@
+const parser = require("postcss-value-parser");
+
 /**
  * @type {import('postcss').PluginCreator}
  */
 module.exports = (opts = {}) => {
-  // Work with options here
-
+  const { tokens } = opts;
   return {
-    postcssPlugin: 'postcss-design-tokens',
-    /*
-    Root (root, postcss) {
-      // Transform CSS AST here
-    }
-    */
-
-    /*
-    Declaration (decl, postcss) {
-      // The faster way to find Declaration node
-    }
-    */
-
-    /*
-    Declaration: {
-      color: (decl, postcss) {
-        // The fastest way find Declaration node if you know property name
+    postcssPlugin: "postcss-design-tokens",
+    Once(root, { result }) {
+      if (!tokens || typeof tokens !== "object") {
+        root.warn(
+          result,
+          `Design tokens must be passed through as a JS object via the "tokens" option in the plugin config`
+        );
       }
-    }
-    */
-  }
-}
+    },
+    Declaration(decl, { result }) {
+      if (!decl.value) return;
+      try {
+        decl.value = parser(decl.value)
+          .walk((node) => {
+            // Ensure this is a token() function.
+            if (node.type !== "function" || node.value !== "token") {
+              return;
+            }
+            // Use the first arg.
+            const arg = node.nodes[0];
+            if (!arg || arg.type !== "word") {
+              throw `Incorrect or missing argument for token() function`;
+            }
 
-module.exports.postcss = true
+            const token = parser.stringify(arg);
+            const value = token.split(".").reduce((o, i) => o[i], tokens);
+
+            // Error out of the try/catch if the token isn't available.
+            if (!value) {
+              throw `Could not find the ${token} token`;
+            }
+
+            node.type = "word";
+            node.value = value;
+          })
+          .toString();
+      } catch (error) {
+        decl.warn(result, error);
+      }
+    },
+  };
+};
+
+module.exports.postcss = true;

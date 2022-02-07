@@ -2,7 +2,12 @@
   "name": "postcss-design-tokens",
   "version": "0.0.0",
   "description": "PostCSS plugin that provides a function to reference design tokens in CSS",
-  "keywords": ["postcss", "css", "postcss-plugin", "postcss-design-tokens"],
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "postcss-design-tokens"
+  ],
   "scripts": {
     "test": "jest --coverage && eslint ."
   },
@@ -30,7 +35,10 @@
       "node": true,
       "es6": true
     },
-    "extends": ["eslint:recommended", "plugin:jest/recommended"],
+    "extends": [
+      "eslint:recommended",
+      "plugin:jest/recommended"
+    ],
     "rules": {
       "jest/expect-expect": "off"
     }
@@ -38,8 +46,11 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "statements": 100
+        "statements": 90
       }
     }
+  },
+  "dependencies": {
+    "postcss-value-parser": "^4.2.0"
   }
 }
