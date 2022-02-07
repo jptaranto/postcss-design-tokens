@@ -7,3 +7,4 @@ yarn.lock
 .github
 .idea
 coverage/
+.DS_Store

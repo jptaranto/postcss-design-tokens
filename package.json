@@ -13,7 +13,8 @@
   ],
   "scripts": {
     "test": "jest --coverage && prettier --check . && eslint --ext jsx,json,js .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "publish": "semantic-release"
   },
   "author": "jptaranto <jacktaranto@gmail.com>",
   "license": "MIT",
@@ -25,13 +26,13 @@
     "postcss": "^8.3.0"
   },
   "devDependencies": {
-    "clean-publish": "^3.4.2",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^25.2.2",
     "jest": "^27.3.1",
     "postcss": "^8.3.11",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "semantic-release": "^19.0.2"
   },
   "eslintConfig": {
     "parserOptions": {
@@ -58,6 +59,8 @@
     }
   },
   "dependencies": {
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
     "postcss-value-parser": "^4.2.0"
   }
 }
