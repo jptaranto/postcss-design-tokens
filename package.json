@@ -13,8 +13,7 @@
   ],
   "scripts": {
     "test": "jest --coverage && prettier --check . && eslint --ext jsx,json,js .",
-    "format": "prettier --write .",
-    "publish": "semantic-release"
+    "format": "prettier --write ."
   },
   "author": "jptaranto <jacktaranto@gmail.com>",
   "license": "MIT",
