@@ -14,9 +14,13 @@ it("substitutes value", async () => {
   const tokens = {
     issa: "#fff",
   }
-  await run("a { font-size: token(issa); }", "a { font-size: #fff; }", {
-    tokens,
-  })
+  await run(
+    "a { font-size: token(issa); color: token(\"issa\"); line-height: token('issa'); }",
+    "a { font-size: #fff; color: #fff; line-height: #fff; }",
+    {
+      tokens,
+    }
+  )
 })
 
 it("substitutes nested values", async () => {
@@ -28,8 +32,8 @@ it("substitutes nested values", async () => {
     },
   }
   await run(
-    "a { font-size: token(issa.bagayogo.timbuktu); }",
-    "a { font-size: #fff; }",
+    "a { font-size: token(issa.bagayogo.timbuktu); color: token(\"issa.bagayogo.timbuktu\"); line-height: token('issa.bagayogo.timbuktu'); }",
+    "a { font-size: #fff; color: #fff; line-height: #fff; }",
     { tokens }
   )
 })

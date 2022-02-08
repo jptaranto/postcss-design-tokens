@@ -5,16 +5,26 @@
 [postcss]: https://github.com/postcss/postcss
 
 ```css
+:root {
+  --blue: token("colors.blue");
+}
+
 .foo {
-  color: token(colors.blue);
+  color: var(--blue);
 }
 ```
 
 ```css
+:root {
+  --blue: #000066;
+}
+
 .foo {
-  color: #000066;
+  color: var(--blue);
 }
 ```
+
+Tokens can be expressed within a `.js` or `.json` file and imported via the [plugin configuration](#tokens-required).
 
 ## Usage
 
@@ -36,16 +46,35 @@ module.exports = {
 }
 ```
 
-**Step 3:** Use the token() function in your CSS to retrieve the token values.
+**Step 3:** Use the token() function in your CSS to retrieve the token values. Any of the below arg formats are valid (quotes or without):
+
+```css
+.foo {
+  font-size: token(large);
+  color: token("blue");
+}
+```
+
 Use dot notation for nested values:
 
 ```css
 .foo {
-  color: token(blue);
+  font-size: token(fontSizes.large);
+  color: token("colors.blue");
+}
+```
+
+And, ideally use them inside [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties):
+
+```css
+:root {
+  --font-size-l: token(fontSizes.large);
+  --blue: token("colors.blue");
 }
 
-.bar {
-  font-size: token(fontSizes.large);
+.foo {
+  font-size: var(--font-size-l);
+  color: var(--blue);
 }
 ```
 
@@ -55,7 +84,7 @@ Use dot notation for nested values:
 
 ### `tokens` (required)
 
-A JS object of your design tokens. Tokens can be nested and there's no defined structure
+A JS object of your design tokens. Tokens can be nested to any level and there's no defined structure
 you need to adhere to.
 
 Instead of defining these inside your `postcss.config.js` it
