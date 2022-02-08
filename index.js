@@ -24,13 +24,23 @@ module.exports = (opts = {}) => {
             if (node.type !== "function" || node.value !== "token") {
               return
             }
+
             // Use the first arg.
             const arg = node.nodes[0]
-            if (!arg || arg.type !== "word") {
+
+            // Allow arg in "string" or "word" format.
+            if (!arg || (arg.type !== "string" && arg.type !== "word")) {
               throw `Incorrect or missing argument for token() function`
             }
 
-            const token = parser.stringify(arg)
+            let token = parser.stringify(arg)
+
+            // Remove quotes from string.
+            if (arg.type === "string") {
+              token = token.replaceAll(arg.quote, "")
+            }
+
+            // Attempt to get the token value by splitting the string.
             const value = token.split(".").reduce((o, i) => o[i], tokens)
 
             // Error out of the try/catch if the token isn't available.
