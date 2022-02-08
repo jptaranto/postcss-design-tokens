@@ -37,7 +37,8 @@ module.exports = (opts = {}) => {
 
             // Remove quotes from string.
             if (arg.type === "string") {
-              token = token.replaceAll(arg.quote, "")
+              const search = new RegExp(arg.quote, "g")
+              token = token.replace(search, "")
             }
 
             // Attempt to get the token value by splitting the string.
