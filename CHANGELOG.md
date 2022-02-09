@@ -1,5 +1,12 @@
 # Release notes
 
+## [1.2.1](https://github.com/jptaranto/postcss-design-tokens/compare/1.2.0...1.2.1) (2022-02-09)
+
+
+### Bug Fixes
+
+* add docs for media queries ([0469142](https://github.com/jptaranto/postcss-design-tokens/commit/0469142fa1a6403f22c244b4a4aa7587e18c0d82))
+
 # [1.2.0](https://github.com/jptaranto/postcss-design-tokens/compare/1.1.0...1.2.0) (2022-02-09)
 
 
