@@ -1,5 +1,12 @@
 # Release notes
 
+# [1.2.0](https://github.com/jptaranto/postcss-design-tokens/compare/1.1.0...1.2.0) (2022-02-09)
+
+
+### Features
+
+* support token() function in [@media](https://github.com/media) and [@custom-media](https://github.com/custom-media) ([4935b2d](https://github.com/jptaranto/postcss-design-tokens/commit/4935b2d471b701f6bc924ae316b427137cf5be7c))
+
 # [1.1.0](https://github.com/jptaranto/postcss-design-tokens/compare/1.0.0...1.1.0) (2022-02-08)
 
 
