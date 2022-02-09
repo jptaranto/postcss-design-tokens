@@ -2,7 +2,18 @@ const postcss = require("postcss")
 
 const plugin = require("./")
 
-async function run(input, output, opts = {}, warnings = 0) {
+const tokens = {
+  font: "Helvetica",
+  color: {
+    deeppink: "#ff1493",
+  },
+  breakpoint: {
+    desktop: "64em",
+  },
+  width: "768px",
+}
+
+async function run(input, output, warnings = 0, opts = { tokens }) {
   let result = await postcss([plugin(opts)]).process(input, {
     from: undefined,
   })
@@ -10,87 +21,222 @@ async function run(input, output, opts = {}, warnings = 0) {
   expect(result.warnings()).toHaveLength(warnings)
 }
 
-it("substitutes value", async () => {
-  const tokens = {
-    issa: "#fff",
-  }
-  await run(
-    "a { font-size: token(issa); color: token(\"issa\"); line-height: token('issa'); }",
-    "a { font-size: #fff; color: #fff; line-height: #fff; }",
-    {
-      tokens,
-    }
-  )
-})
-
-it("substitutes nested values", async () => {
-  const tokens = {
-    issa: {
-      bagayogo: {
-        timbuktu: "#fff",
-      },
-    },
-  }
-  await run(
-    "a { font-size: token(issa.bagayogo.timbuktu); color: token(\"issa.bagayogo.timbuktu\"); line-height: token('issa.bagayogo.timbuktu'); }",
-    "a { font-size: #fff; color: #fff; line-height: #fff; }",
-    { tokens }
-  )
-})
-
-it("wont substitute other functions or values", async () => {
-  const tokens = {
-    issa: "#fff",
-  }
-  await run(
-    "a { font-size: token(issa); color: color(bagayogo); line-height: 1.5; }",
-    "a { font-size: #fff; color: color(bagayogo); line-height: 1.5; }",
-    { tokens }
-  )
-})
-
-it("only substitutes the first function arg", async () => {
-  const tokens = {
-    issa: "#fff",
-  }
-  await run(
-    "a { font-size: token(issa, bagayogo); }",
-    "a { font-size: #fff; }",
-    { tokens }
-  )
-})
-
-describe("warning", () => {
-  it("on missing tokens option", async () => {
+describe("* declarations", () => {
+  describe("retrieves value", () => {
+    it("without quotes", async () => {
+      await run(`a { font: token(font); }`, `a { font: Helvetica; }`)
+    })
+    it('with " quotes', async () => {
+      await run(`a { font: token("font"); }`, `a { font: Helvetica; }`)
+    })
+    it("with ' quotes", async () => {
+      await run(`a { font: token('font'); }`, `a { font: Helvetica; }`)
+    })
+  })
+  describe("retrieves nested value", () => {
+    it("without quotes", async () => {
+      await run(`a { color: token(color.deeppink); }`, `a { color: #ff1493; }`)
+    })
+    it(`with " quotes`, async () => {
+      await run(
+        `a { color: token("color.deeppink"); }`,
+        `a { color: #ff1493; }`
+      )
+    })
+    it(`with ' quotes`, async () => {
+      await run(
+        `a { color: token('color.deeppink'); }`,
+        `a { color: #ff1493; }`
+      )
+    })
+  })
+  it("does not interfere with other functions or values", async () => {
     await run(
-      "a { font-size: token(issa); }",
-      "a { font-size: token(issa); }",
-      {},
-      2
+      `a { color: color(deeppink); line-height: 1.5; }`,
+      `a { color: color(deeppink); line-height: 1.5; }`
     )
   })
-
-  it("on missing token", async () => {
-    const tokens = {
-      issa: "#fff",
-    }
+  it("only substitutes the first function arg", async () => {
     await run(
-      "a { font-size: token(issa); color: token(bagayogo); }",
-      "a { font-size: #fff; color: token(bagayogo); }",
-      { tokens },
-      1
+      `a { font: token(font, color.deeppink); }`,
+      `a { font: Helvetica; }`
     )
   })
+  it("empty declaration", async () => {
+    await run(`a { font: ; }`, `a { font: ; }`)
+  })
+  describe("warning", () => {
+    it("on missing tokens option", async () => {
+      await run(
+        `a { font-size: token(font); }`,
+        `a { font-size: token(font); }`,
+        2,
+        {}
+      )
+    })
+    it("on missing token", async () => {
+      await run(`a { font: token(null); }`, `a { font: token(null); }`, 1)
+    })
+    it("on incorrect token", async () => {
+      await run(`a { font: token(); }`, `a { font: token(); }`, 1)
+    })
+  })
+})
 
-  it("on incorrect token", async () => {
-    const tokens = {
-      issa: "#fff",
-    }
+describe("@media atrule", () => {
+  describe("retrieves value", () => {
+    it("without quotes", async () => {
+      await run(
+        `@media (max-width: token(width)) {}`,
+        `@media (max-width: 768px) {}`
+      )
+    })
+    it(`with " quotes`, async () => {
+      await run(
+        `@media (max-width: token("width")) {}`,
+        `@media (max-width: 768px) {}`
+      )
+    })
+    it(`with ' quotes`, async () => {
+      await run(
+        `@media (max-width: token('width')) {}`,
+        `@media (max-width: 768px) {}`
+      )
+    })
+  })
+  describe("retrieves nested value", () => {
+    it("without quotes", async () => {
+      await run(
+        `@media (max-width: token(breakpoint.desktop)) {}`,
+        `@media (max-width: 64em) {}`
+      )
+    })
+    it(`with " quotes`, async () => {
+      await run(
+        `@media (max-width: token("breakpoint.desktop")) {}`,
+        `@media (max-width: 64em) {}`
+      )
+    })
+    it(`with ' quotes`, async () => {
+      await run(
+        `@media (max-width: token('breakpoint.desktop')) {}`,
+        `@media (max-width: 64em) {}`
+      )
+    })
+  })
+  it("does not interfere with other functions or values", async () => {
     await run(
-      "a { font-size: token(issa); color: token(); }",
-      "a { font-size: #fff; color: token(); }",
-      { tokens },
-      1
+      "@media (max-width: color(#fff)) {} @media (max-width: 75rem) {}",
+      "@media (max-width: color(#fff)) {} @media (max-width: 75rem) {}"
     )
+  })
+  it("only substitutes the first function arg", async () => {
+    await run(
+      `@media (max-width: token(width, breakpoint.desktop)) {}`,
+      `@media (max-width: 768px) {}`
+    )
+  })
+  describe("warning", () => {
+    it("on missing tokens option", async () => {
+      await run(
+        `@media (max-width: token(width)) {}`,
+        `@media (max-width: token(width)) {}`,
+        2,
+        {}
+      )
+    })
+    it("on missing token", async () => {
+      await run(
+        `@media (max-width: token(null)) {}`,
+        `@media (max-width: token(null)) {}`,
+        1
+      )
+    })
+    it("on incorrect token", async () => {
+      await run(
+        `@media (max-width: token()) {}`,
+        `@media (max-width: token()) {}`,
+        1
+      )
+    })
+  })
+})
+
+describe("@custom-media atrule", () => {
+  describe("retrieves value", () => {
+    it("without quotes", async () => {
+      await run(
+        `@custom-media --mobile (max-width: token(width));`,
+        `@custom-media --mobile (max-width: 768px);`
+      )
+    })
+    it(`with " quotes`, async () => {
+      await run(
+        `@custom-media --mobile (max-width: token("width"));`,
+        `@custom-media --mobile (max-width: 768px);`
+      )
+    })
+    it(`with ' quotes`, async () => {
+      await run(
+        `@custom-media --mobile (max-width: token('width'));`,
+        `@custom-media --mobile (max-width: 768px);`
+      )
+    })
+  })
+  describe("retrieves nested value", () => {
+    it("without quotes", async () => {
+      await run(
+        `@custom-media --desktop (min-width: token(breakpoint.desktop));`,
+        `@custom-media --desktop (min-width: 64em);`
+      )
+    })
+    it(`with " quotes`, async () => {
+      await run(
+        `@custom-media --desktop (min-width: token("breakpoint.desktop"));`,
+        `@custom-media --desktop (min-width: 64em);`
+      )
+    })
+    it(`with ' quotes`, async () => {
+      await run(
+        `@custom-media --desktop (min-width: token('breakpoint.desktop'));`,
+        `@custom-media --desktop (min-width: 64em);`
+      )
+    })
+  })
+  it("does not interfere with other functions or values", async () => {
+    await run(
+      `@custom-media --other (max-width: color(#fff)); @custom-media --another (max-width: 1200px);`,
+      `@custom-media --other (max-width: color(#fff)); @custom-media --another (max-width: 1200px);`
+    )
+  })
+  it("only substitutes the first function arg", async () => {
+    await run(
+      `@custom-media --desktop (min-width: token(breakpoint.desktop, width));`,
+      `@custom-media --desktop (min-width: 64em);`
+    )
+  })
+  describe("warning", () => {
+    it("on missing tokens option", async () => {
+      await run(
+        `@custom-media --mobile (max-width: token(width));`,
+        `@custom-media --mobile (max-width: token(width));`,
+        2,
+        {}
+      )
+    })
+    it("on missing token", async () => {
+      await run(
+        `@custom-media --mobile (max-width: token(null));`,
+        `@custom-media --mobile (max-width: token(null));`,
+        1
+      )
+    })
+    it("on incorrect token", async () => {
+      await run(
+        `@custom-media --mobile (max-width: token());`,
+        `@custom-media --mobile (max-width: token());`,
+        1
+      )
+    })
   })
 })
