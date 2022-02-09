@@ -24,17 +24,17 @@
 }
 ```
 
-Tokens can be expressed within a `.js` or `.json` file and imported via the [plugin configuration](#tokens-required).
+Tokens can be expressed within a `.js` or `.json` file and imported via the [plugin options](#options).
 
-## Usage
-
-**Step 1:** Install plugin:
+## Install
 
 ```sh
 npm install --save-dev postcss postcss-design-tokens
 ```
 
-**Step 2:** Import your design tokens and add the plugin to plugins list in `postcss.config.js`:
+## Configuration
+
+Import your design tokens and add the plugin to the `plugins` list in `postcss.config.js`:
 
 ```js
 const tokens = require("./design-tokens.js")
@@ -46,7 +46,9 @@ module.exports = {
 }
 ```
 
-**Step 3:** Use the token() function in your CSS to retrieve the token values. Any of the below arg formats are valid (quotes or without):
+## Usage
+
+Use the token() function in your CSS to retrieve the token values. Any of the below arg formats are valid (with quotes or without):
 
 ```css
 .foo {
@@ -75,6 +77,28 @@ And, ideally use them inside [CSS Custom Properties](https://developer.mozilla.o
 .foo {
   font-size: var(--font-size-l);
   color: var(--blue);
+}
+```
+
+And media queries:
+
+```css
+@media (min-width: token(breakpoint.desktop)) {
+  .foo {
+    display: block;
+  }
+}
+```
+
+Or if you're using `@custom-media`:
+
+```css
+@custom-media --desktop-up (min-width: token(breakpoint.desktop));
+
+@media (--desktop-up) {
+  .foo {
+    display: block;
+  }
 }
 ```
 
