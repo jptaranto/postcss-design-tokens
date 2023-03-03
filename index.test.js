@@ -240,3 +240,82 @@ describe("@custom-media atrule", () => {
     })
   })
 })
+
+describe("@container atrule", () => {
+  describe("retrieves value", () => {
+    it("without quotes", async () => {
+      await run(
+        `@container (max-width: token(width)) {}`,
+        `@container (max-width: 768px) {}`
+      )
+    })
+    it(`with " quotes`, async () => {
+      await run(
+        `@container (max-width: token("width")) {}`,
+        `@container (max-width: 768px) {}`
+      )
+    })
+    it(`with ' quotes`, async () => {
+      await run(
+        `@container (max-width: token('width')) {}`,
+        `@container (max-width: 768px) {}`
+      )
+    })
+  })
+  describe("retrieves nested value", () => {
+    it("without quotes", async () => {
+      await run(
+        `@container (max-width: token(breakpoint.desktop)) {}`,
+        `@container (max-width: 64em) {}`
+      )
+    })
+    it(`with " quotes`, async () => {
+      await run(
+        `@container (max-width: token("breakpoint.desktop")) {}`,
+        `@container (max-width: 64em) {}`
+      )
+    })
+    it(`with ' quotes`, async () => {
+      await run(
+        `@container (max-width: token('breakpoint.desktop')) {}`,
+        `@container (max-width: 64em) {}`
+      )
+    })
+  })
+  it("does not interfere with other functions or values", async () => {
+    await run(
+      "@container (max-width: color(#fff)) {} @container (max-width: 75rem) {}",
+      "@container (max-width: color(#fff)) {} @container (max-width: 75rem) {}"
+    )
+  })
+  it("only substitutes the first function arg", async () => {
+    await run(
+      `@container (max-width: token(width, breakpoint.desktop)) {}`,
+      `@container (max-width: 768px) {}`
+    )
+  })
+  describe("warning", () => {
+    it("on missing tokens option", async () => {
+      await run(
+        `@container (max-width: token(width)) {}`,
+        `@container (max-width: token(width)) {}`,
+        2,
+        {}
+      )
+    })
+    it("on missing token", async () => {
+      await run(
+        `@container (max-width: token(null)) {}`,
+        `@container (max-width: token(null)) {}`,
+        1
+      )
+    })
+    it("on incorrect token", async () => {
+      await run(
+        `@container (max-width: token()) {}`,
+        `@container (max-width: token()) {}`,
+        1
+      )
+    })
+  })
+})
