@@ -5,6 +5,16 @@ const parseResult = require("./lib/parseResult")
  */
 module.exports = (opts = {}) => {
   const { tokens } = opts
+  const tokenAtRule = (atRule, { result }) => {
+    if (!atRule.params.includes("token(")) {
+      return
+    }
+    try {
+      atRule.params = parseResult(atRule.params, tokens)
+    } catch (error) {
+      atRule.warn(result, error)
+    }
+  }
   return {
     postcssPlugin: "postcss-design-tokens",
     Once(root, { result }) {
@@ -28,26 +38,9 @@ module.exports = (opts = {}) => {
       },
     },
     AtRule: {
-      media: (atRule, { result }) => {
-        if (!atRule.params.includes("token(")) {
-          return
-        }
-        try {
-          atRule.params = parseResult(atRule.params, tokens)
-        } catch (error) {
-          atRule.warn(result, error)
-        }
-      },
-      "custom-media": (atRule, { result }) => {
-        if (!atRule.params.includes("token(")) {
-          return
-        }
-        try {
-          atRule.params = parseResult(atRule.params, tokens)
-        } catch (error) {
-          atRule.warn(result, error)
-        }
-      },
+      media: tokenAtRule,
+      "custom-media": tokenAtRule,
+      container: tokenAtRule,
     },
   }
 }
