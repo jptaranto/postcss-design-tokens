@@ -1,5 +1,12 @@
 # Release notes
 
+# [1.3.0](https://github.com/jptaranto/postcss-design-tokens/compare/1.2.1...1.3.0) (2023-03-03)
+
+
+### Features
+
+* support token() function in [@container](https://github.com/container) ([3c5e80d](https://github.com/jptaranto/postcss-design-tokens/commit/3c5e80db8fd8d1349e32c359725ff06a944feed1))
+
 ## [1.2.1](https://github.com/jptaranto/postcss-design-tokens/compare/1.2.0...1.2.1) (2022-02-09)
 
 
